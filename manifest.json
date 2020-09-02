@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Browse pages you want to check periodically",
   "permissions": [
-      "storage", "tabs", "http://*/*", "https://*/*", "activeTab"
+      "storage", "tabs", "activeTab"
   ],
 	"background": {
       "scripts": ["background.js"],
