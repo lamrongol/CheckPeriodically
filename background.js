@@ -83,5 +83,5 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 })
 
 
-setInterval(checkPeriodically, CHECK_FREQUENCY_MINUTES*60*1000);//execute every CHECK_FREQUENCY_MINUTES minutes
+setInterval(checkPeriodically, CHECK_FREQUENCY_MINUTES*60*1000);//execute every CHECK_FREQUENCY_MINUTES
 setTimeout(checkPeriodically, 3000);
