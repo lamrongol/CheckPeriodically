@@ -49,7 +49,7 @@ const checkPeriodically = () => {
         chrome.storage.sync.set({"last_check_time": now_seconds})
         if(browsing_list.length){
             for(const [index, url] of browsing_list.entries()){
-                setTimeout(()=>{chrome.tabs.create({url:url})}, index*500);
+                setTimeout(()=>{chrome.tabs.create({url:url})}, index*1000);
             }
 
             chrome.storage.sync.set({"pages": result.pages});
