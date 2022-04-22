@@ -1,15 +1,14 @@
 {
   "name": "Browse Periodically（定期的にチェック）",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Browse pages you want to check periodically",
   "permissions": [
       "storage", "tabs", "activeTab"
   ],
 	"background": {
-      "scripts": ["background.js"],
-      "persistent": true
+      "service_worker":"background.js"
   },
-	"browser_action": {
+	"action": {
 	  "default_title": "Check Periodically",
     "default_popup": "popup.html",
 	  "default_icon": {
@@ -29,6 +28,6 @@
     "page": "options.html",
     "open_in_tab": true
   },
-	"manifest_version": 2
+	"manifest_version": 3
 	
 }

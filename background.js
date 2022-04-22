@@ -64,10 +64,10 @@ function reloadBadge(tab){
         } 
         const detail = result.pages[tab.url];
         if(detail){
-            chrome.browserAction.setBadgeText({"text":String(detail.interval)})
-            chrome.browserAction.setBadgeBackgroundColor({color: "black"});
+            chrome.action.setBadgeText({"text":String(detail.interval)})
+            chrome.action.setBadgeBackgroundColor({color: "black"});
         }else{
-            chrome.browserAction.setBadgeText({"text":""})
+            chrome.action.setBadgeText({"text":""})
         }
     })
 }
