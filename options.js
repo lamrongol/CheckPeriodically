@@ -85,7 +85,7 @@ const table = new Tabulator("#grid-view", {
     //if(data.url && !data.title) cell.getRow()
     if(!data.url || !data.interval) return;
 
-    chrome.storage.sync.get("pages", (result) => {
+    chrome.storage.local.get("pages", (result) => {
       if(origin_url && origin_url!=data.url){
         delete result.pages[origin_url]
       }
@@ -98,12 +98,12 @@ const table = new Tabulator("#grid-view", {
         title:data.title
       }
 
-      chrome.storage.sync.set({"pages":result.pages}, () => {})
+      chrome.storage.local.set({"pages":result.pages}, () => {})
     })
   },
 });
 
-chrome.storage.sync.get("pages", (result) => {
+chrome.storage.local.get("pages", (result) => {
   for(const [url, detail] of Object.entries(result.pages)){
     const day_of_week_name = detail.interval%7==0 ? days_of_week[detail.day_of_week] : null;
     table.addData({url:url, title:detail.title, interval: detail.interval, 
@@ -117,9 +117,9 @@ document.getElementById("delete").addEventListener("click", function(){
   const ret = window.confirm("Do you really delete?");
   if(!ret) return;
 
-  chrome.storage.sync.get("pages", (result) => {
+  chrome.storage.local.get("pages", (result) => {
     delete result.pages[origin_url]
-    chrome.storage.sync.set(
+    chrome.storage.local.set(
         {"pages":result.pages}, () => {
           selected_row.delete();
         }               
@@ -134,7 +134,7 @@ document.getElementById("add").addEventListener("click", function(){
 //Interval menu list
 const interval_list = document.getElementById('interval_list');
 let menu;
-chrome.storage.sync.get("menu", (result) => {
+chrome.storage.local.get("menu", (result) => {
   menu = result.menu;
   for(const interval of menu){
     const opt = document.createElement("option");
@@ -149,7 +149,7 @@ document.getElementById("delete_interval").addEventListener("click", function(){
   if(interval_list.selectedIndex==-1) return;
   
   menu.splice(interval_list.selectedIndex, 1)
-  chrome.storage.sync.set(
+  chrome.storage.local.set(
       {"menu":menu}, () => {
         interval_list.remove(interval_list.selectedIndex);
       }               
@@ -174,7 +174,7 @@ function add_interval(){
   if(insertIndex==-1) insertIndex = menu.length;
 
   menu.splice(insertIndex, 0, new_interval);
-  chrome.storage.sync.set({"menu":menu})
+  chrome.storage.local.set({"menu":menu})
 
   const opt = document.createElement("option");
   opt.value = new_interval;

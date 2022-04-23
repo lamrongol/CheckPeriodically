@@ -12,16 +12,16 @@ function click(e) {
             day_of_week = new Date().getDay();
         }
     
-        chrome.storage.sync.get("pages", (result) => {
+        chrome.storage.local.get("pages", (result) => {
             result.pages[url] = {
                 interval:interval,
                 last_shown_time:last_shown_time,
                 day_of_week:day_of_week,
                 title:title
             }
-            chrome.storage.sync.set(
+            chrome.storage.local.set(
                 {"pages":result.pages}, () => {
-                    chrome.browserAction.setBadgeText({text:interval})
+                    chrome.action.setBadgeText({text:interval})
     
                     window.close();            
                 }               
@@ -32,10 +32,10 @@ function click(e) {
 };
 
 function deleteFromData(url){
-    chrome.storage.sync.get("pages", (result) => {
+    chrome.storage.local.get("pages", (result) => {
         delete result.pages[url]
-        chrome.storage.sync.set({"pages":result.pages}, () => {
-                chrome.browserAction.setBadgeText({text:""})
+        chrome.storage.local.set({"pages":result.pages}, () => {
+                chrome.action.setBadgeText({text:""})
 
                 window.close();            
             }               
@@ -44,7 +44,7 @@ function deleteFromData(url){
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    chrome.storage.sync.get('menu', (result) => {
+    chrome.storage.local.get('menu', (result) => {
         const div = document.getElementById("interval_list");
         for(const interval of result.menu){
             let button = document.createElement("button");
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        chrome.storage.sync.get('pages', (result) => {
+        chrome.storage.local.get('pages', (result) => {
             const detail = result.pages[tabs[0].url];
             if(detail){
                 document.getElementById("dont_check").style.display = "block"

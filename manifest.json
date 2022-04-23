@@ -3,7 +3,7 @@
   "version": "0.3.0",
   "description": "Browse pages you want to check periodically",
   "permissions": [
-      "storage", "tabs", "activeTab"
+      "storage", "tabs", "activeTab", "unlimitedStorage"
   ],
 	"background": {
       "service_worker":"background.js"

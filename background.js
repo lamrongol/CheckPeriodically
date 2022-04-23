@@ -1,18 +1,28 @@
 chrome.runtime.onInstalled.addListener((details) => {
     if(details.reason == "install"){
         //Init data
-        chrome.storage.sync.set({'pages': {}})
-        chrome.storage.sync.set({"last_check_time": new Date().getTime()})
-        chrome.storage.sync.set({"menu": [1,3,7,30,180,365]})
+        chrome.storage.local.set({'pages': {}})
+        chrome.storage.local.set({"last_check_time": new Date().getTime()})
+        chrome.storage.local.set({"menu": [1,3,7,30,180,365]})
     }
 });
+
+//Moving data from sync to local
+chrome.storage.local.get(['pages', "last_check_time", "menu"], (local_data) => {
+    if(local_data.pages) return;
+
+    chrome.storage.sync.get(['pages', "last_check_time", "menu"], (sync_data) => {
+        chrome.storage.local.set({"pages": sync_data.pages, "last_check_time": sync_data.last_check_time, "menu": sync_data.menu});
+    })
+});   
+
 //Think "Today" breakpoint is following
 const TODAY_BREAKPOINT_HOUR = 4;
 
 const CHECK_FREQUENCY_MINUTES = 10;
 
 const checkPeriodically = () => {
-    chrome.storage.sync.get(['pages', "last_check_time"], (result) => {
+    chrome.storage.local.get(['pages', "last_check_time"], (result) => {
         if(!result.pages) return;
 
         const now = new Date();
@@ -46,19 +56,19 @@ const checkPeriodically = () => {
                 detail.last_shown_time = now_seconds;
             }
         }
-        chrome.storage.sync.set({"last_check_time": now_seconds})
+        chrome.storage.local.set({"last_check_time": now_seconds})
         if(browsing_list.length){
             for(const [index, url] of browsing_list.entries()){
                 setTimeout(()=>{chrome.tabs.create({url:url})}, index*1000);
             }
 
-            chrome.storage.sync.set({"pages": result.pages});
+            chrome.storage.local.set({"pages": result.pages});
         }
     });   
 }
 
 function reloadBadge(tab){
-    chrome.storage.sync.get('pages', (result) => {
+    chrome.storage.local.get('pages', (result) => {
         if(!result || !result.pages){
             return;
         } 
