@@ -184,9 +184,9 @@ function add_interval(){
   interval_input.value = "";
 }
 document.getElementById("add_interval").addEventListener("click", add_interval);
-document.getElementById("interval_input").addEventListener("keypress", (e)=>{
-  if(e.keyCode == '13') add_interval();
+document.getElementById("interval_input").addEventListener("keydown", (e)=>{
+  if(e.code == 'Enter') add_interval();
 });
 
-
+return true;
 });
