@@ -3,7 +3,7 @@ chrome.runtime.onInstalled.addListener((details) => {
         //Init data
         chrome.storage.local.set({'pages': {}})
         chrome.storage.local.set({"last_check_time": new Date().getTime()})
-        chrome.storage.local.set({"menu": [1,3,7,30,180,365]})
+        chrome.storage.local.set({"menu": [1,3,7,14,30,90,180,365,1000]})
     }
 });
 
