@@ -8,7 +8,7 @@ chrome.runtime.onInstalled.addListener((details) => {
 });
 
 //Think "Today" breakpoint is following
-const TODAY_BREAKPOINT_HOUR = 4;
+const TODAY_BREAKPOINT_HOUR = 5;
 
 const CHECK_FREQUENCY_MINUTES = 10;
 
