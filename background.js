@@ -7,15 +7,6 @@ chrome.runtime.onInstalled.addListener((details) => {
     }
 });
 
-//Moving data from sync to local
-chrome.storage.local.get(['pages', "last_check_time", "menu"], (local_data) => {
-    if(local_data.pages) return;
-
-    chrome.storage.sync.get(['pages', "last_check_time", "menu"], (sync_data) => {
-        chrome.storage.local.set({"pages": sync_data.pages, "last_check_time": sync_data.last_check_time, "menu": sync_data.menu});
-    })
-});   
-
 //Think "Today" breakpoint is following
 const TODAY_BREAKPOINT_HOUR = 4;
 
