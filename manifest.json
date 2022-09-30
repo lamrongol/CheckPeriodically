@@ -1,6 +1,6 @@
 {
   "name": "Browse Periodically（定期的にチェック）",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Browse pages you want to check periodically",
   "permissions": [
       "storage", "tabs", "activeTab", "unlimitedStorage"
