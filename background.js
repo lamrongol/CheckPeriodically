@@ -59,6 +59,7 @@ const checkPeriodically = () => {
 }
 
 function reloadBadge(tab){
+    if(!tab.url) return;
     chrome.storage.local.get('pages', (result) => {
         if(!result || !result.pages){
             return;
