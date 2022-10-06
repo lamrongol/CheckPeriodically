@@ -34,7 +34,7 @@ const checkPeriodically = () => {
                 let today_start_time = now_seconds-((((now.getHours()-TODAY_BREAKPOINT_HOUR)*3600)+now.getMinutes())*60+now.getSeconds())*1000;
                 if (today_start_time > now_seconds) today_start_time -= ONE_DAY_SECONDS//modify when now is between AM 0:00-5:00
                 
-                const elapsed_days = Math.ceil((today_start_time-detail.last_shown_time)/(86400*1000));
+                const elapsed_days = Math.ceil((today_start_time - detail.last_shown_time) / ONE_DAY_SECONDS);
                 if(elapsed_days<=0) continue;
 
                 if(elapsed_days >= detail.interval) browse = true;
