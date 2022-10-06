@@ -12,6 +12,8 @@ const TODAY_BREAKPOINT_HOUR = 5;
 
 const CHECK_FREQUENCY_MINUTES = 10;
 
+const ONE_DAY_SECONDS = 86400 * 1000;
+
 const checkPeriodically = () => {
     chrome.storage.local.get(['pages', "last_check_time"], (result) => {
         if(!result.pages) return;
@@ -25,12 +27,12 @@ const checkPeriodically = () => {
         for(const [url, detail] of Object.entries(result.pages)){
             let browse = false;
             const elapsed_time = now_seconds - detail.last_shown_time;
-            if(elapsed_time > detail.interval*86400*1000){
+            if (elapsed_time > detail.interval * ONE_DAY_SECONDS){
                 browse = true;
             }else if((now_seconds-last_check_time)>2*CHECK_FREQUENCY_MINUTES*60*1000 ||//もし、10分ごとにチェックしてるはずなのに前回のチェック時間が20分以上前なら（Chrome の終了や休止状態が途中であったなら）、起動直後と判断
                     is_today_breakpoint){
-                let today_start_time = now_seconds-((((now.getHours()-TODAY_BREAKPOINT_HOUR)*60)+now.getMinutes())*60+now.getSeconds())*1000;
-                if(today_start_time>now_seconds) today_start_time -= 86400*1000//modify when now is between AM 0:00-4:00
+                let today_start_time = now_seconds-((((now.getHours()-TODAY_BREAKPOINT_HOUR)*3600)+now.getMinutes())*60+now.getSeconds())*1000;
+                if (today_start_time > now_seconds) today_start_time -= ONE_DAY_SECONDS//modify when now is between AM 0:00-5:00
                 
                 const elapsed_days = Math.ceil((today_start_time-detail.last_shown_time)/(86400*1000));
                 if(elapsed_days<=0) continue;
@@ -63,7 +65,7 @@ function reloadBadge(tab){
     chrome.storage.local.get('pages', (result) => {
         if(!result || !result.pages){
             return;
-        } 
+        }
         const detail = result.pages[tab.url];
         if(detail){
             chrome.action.setBadgeText({"text":String(detail.interval)})
