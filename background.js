@@ -39,7 +39,7 @@ const checkPeriodically = () => {
 
                 if(elapsed_days >= detail.interval) browse = true;
                 else if(detail.interval%7==0){//if interval is n weeks, priority is given to the day of the week
-                    if(((detail.interval - elapsed_days)/7 < 1.0) && now.getDay()==detail.day_of_week) browse = true;
+                    if (((detail.interval - elapsed_days) / 7 < 1.0) && now.getDay() == detail.day_of_week && now.getHours() >= TODAY_BREAKPOINT_HOUR) browse = true;
                 }
             }
 
