@@ -86,6 +86,5 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     reloadBadge(tab)
 })
 
-
-setInterval(checkPeriodically, CHECK_FREQUENCY_MINUTES*60*1000);//execute every CHECK_FREQUENCY_MINUTES
-setTimeout(checkPeriodically, 3000);
+chrome.alarms.create({ when: Date.now() + 5000, periodInMinutes: 10 });
+chrome.alarms.onAlarm.addListener(checkPeriodically);

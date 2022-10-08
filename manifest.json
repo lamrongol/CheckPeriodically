@@ -1,12 +1,16 @@
 {
   "name": "Browse Periodically（定期的にチェック）",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Browse pages you want to check periodically",
   "permissions": [
-      "storage", "tabs", "activeTab", "unlimitedStorage"
+    "storage",
+    "unlimitedStorage",
+    "tabs",
+    "activeTab",
+    "alarms"
   ],
 	"background": {
-      "service_worker":"background.js"
+      "service_worker": "background.js"
   },
 	"action": {
 	  "default_title": "Check Periodically",
