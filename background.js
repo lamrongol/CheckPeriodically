@@ -31,7 +31,7 @@ const checkPeriodically = () => {
                 browse = true;
             }else if((now_seconds-last_check_time)>2*CHECK_FREQUENCY_MINUTES*60*1000 ||//もし、10分ごとにチェックしてるはずなのに前回のチェック時間が20分以上前なら（Chrome の終了や休止状態が途中であったなら）、起動直後と判断
                     is_today_breakpoint){
-                let today_start_time = now_seconds-((((now.getHours()-TODAY_BREAKPOINT_HOUR)*3600)+now.getMinutes())*60+now.getSeconds())*1000;
+                let today_start_time = now_seconds-((now.getHours()-TODAY_BREAKPOINT_HOUR)*3600+now.getMinutes()*60+now.getSeconds())*1000;
                 if (today_start_time > now_seconds) today_start_time -= ONE_DAY_SECONDS//modify when now is between AM 0:00-5:00
                 
                 const elapsed_days = Math.ceil((today_start_time - detail.last_shown_time) / ONE_DAY_SECONDS);
