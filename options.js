@@ -136,6 +136,10 @@ const interval_list = document.getElementById('interval_list');
 let menu;
 chrome.storage.local.get("menu", (result) => {
   menu = result.menu;
+  if(!menu){
+    chrome.storage.local.set({"menu": [1,3,7,14,30,90,180,365,1000]});
+    menu = [1,3,7,14,30,90,180,365,1000];
+  }
   for(const interval of menu){
     const opt = document.createElement("option");
     opt.value = interval;
