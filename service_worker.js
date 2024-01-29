@@ -1,18 +1,37 @@
-chrome.runtime.onInstalled.addListener((details) => {
-    if(details.reason == "install"){
-        //Init data
-        chrome.storage.local.set({'pages': {}})
-        chrome.storage.local.set({"last_check_time": new Date().getTime()})
-        chrome.storage.local.set({"menu": [1,3,7,14,30,90,180,365,1000]})
-    }
-});
-
 //Think "Today" breakpoint is following
 const TODAY_BREAKPOINT_HOUR = 5;
 
 const CHECK_FREQUENCY_MINUTES = 10;
 
 const ONE_DAY_SECONDS = 86400 * 1000;
+
+let mainId;
+
+const detectMainWinodows = () => {
+  chrome.windows.getAll({populate: true, windowTypes: ['normal']}, (windows) => {
+    if (windows.length == 1) return;
+
+    const sortedWindowIdArray = windows.sort((a, b) => b.tabs.length - a.tabs.length).map((win) => win.id);
+
+    mainId = sortedWindowIdArray[0];
+  }
+  )
+}
+
+chrome.runtime.onInstalled.addListener((details) => {
+    if(details.reason == "install"){
+        //Init data
+        chrome.storage.local.set({'pages': {}});
+        chrome.storage.local.set({"last_check_time": new Date().getTime()});
+        chrome.storage.local.set({"menu": [1,3,7,14,30,90,180,365,1000]});
+
+        detectMainWinodows();
+    }
+});
+chrome.runtime.onStartup.addListener(detectMainWinodows);
+chrome.windows.onCreated.addListener(detectMainWinodows);
+chrome.windows.onRemoved.addListener(detectMainWinodows);
+
 
 const checkPeriodically = () => {
     chrome.storage.local.get(['pages', "last_check_time"], (result) => {
@@ -38,12 +57,11 @@ const checkPeriodically = () => {
                 if(elapsed_days<=0) continue;
 
                 if(elapsed_days >= detail.interval) browse = true;
-                else if(detail.interval%7==0){//if interval is n weeks, priority is given to the day of the week
+                else if(detail.interval % 7 == 0){//if interval is n weeks, priority is given to the day of the week
                     if (((detail.interval - elapsed_days) / 7 < 1.0) && now.getDay() == detail.day_of_week && now.getHours() >= TODAY_BREAKPOINT_HOUR) browse = true;
                 }
             }
 
-            //browse = true;//For debug
             if(browse){
                 browsing_list.push(url)
                 detail.last_shown_time = now_seconds;
@@ -52,7 +70,7 @@ const checkPeriodically = () => {
         chrome.storage.local.set({"last_check_time": now_seconds})
         if(browsing_list.length){
             for(const [index, url] of browsing_list.entries()){
-                setTimeout(()=>{chrome.tabs.create({url:url})}, index*1000);
+                setTimeout(()=>{chrome.tabs.create({url:url, windowId: mainId})}, index*1000);
             }
 
             chrome.storage.local.set({"pages": result.pages});
@@ -82,7 +100,7 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
     })
 })
 
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+chrome.tabs.onUpdated.addListener((_tabId, _changeInfo, tab) => {
     reloadBadge(tab)
 })
 
