@@ -28,7 +28,12 @@ chrome.runtime.onInstalled.addListener((details) => {
         detectMainWinodows();
     }
 });
-chrome.runtime.onStartup.addListener(detectMainWinodows);
+
+chrome.runtime.onStartup.addListener(() =>{
+        detectMainWinodows();
+        checkPeriodically();
+    }
+);
 chrome.windows.onCreated.addListener(detectMainWinodows);
 chrome.windows.onRemoved.addListener(detectMainWinodows);
 
@@ -104,5 +109,7 @@ chrome.tabs.onUpdated.addListener((_tabId, _changeInfo, tab) => {
     reloadBadge(tab)
 })
 
-chrome.alarms.create({ when: Date.now() + 5000, periodInMinutes: 10 });
-chrome.alarms.onAlarm.addListener(checkPeriodically);
+chrome.alarms.create({periodInMinutes: 10 }, () =>{
+    detectMainWinodows();
+    checkPeriodically();
+});
