@@ -5,14 +5,16 @@ const CHECK_FREQUENCY_MINUTES = 10;
 
 const ONE_DAY_SECONDS = 86400 * 1000;
 
-let mainId;
+let mainId = null;
 
 const detectMainWinodows = () => {
   chrome.windows.getAll({populate: true, windowTypes: ['normal']}, (windows) => {
-    if (windows.length == 1) return;
+    if (windows.length == 1){
+        mainId = null;
+        return;
+    }
 
     const sortedWindowIdArray = windows.sort((a, b) => b.tabs.length - a.tabs.length).map((win) => win.id);
-
     mainId = sortedWindowIdArray[0];
   }
   )
@@ -76,7 +78,8 @@ const checkPeriodically = () => {
         chrome.storage.local.set({"last_check_time": now_seconds})
         if(browsing_list.length){
             for(const [index, url] of browsing_list.entries()){
-                setTimeout(()=>{chrome.tabs.create({url:url, windowId: mainId})}, index*1000);
+                if(mainId==null) setTimeout(()=>{chrome.tabs.create({url: url})}, index*1000);
+                else setTimeout(()=>{chrome.tabs.create({url: url, windowId: mainId})}, index*1000);                
             }
 
             chrome.storage.local.set({"pages": result.pages});
@@ -85,7 +88,7 @@ const checkPeriodically = () => {
 }
 
 function reloadBadge(tab){
-    if(!tab.url) return;
+    if(!tab || !tab.url) return;
     chrome.storage.local.get('pages', (result) => {
         if(!result || !result.pages){
             return;
@@ -110,6 +113,7 @@ chrome.tabs.onUpdated.addListener((_tabId, _changeInfo, tab) => {
     reloadBadge(tab)
 })
 
+// service_worker(including alarms) sleeps when browser is not active for a while 
 chrome.alarms.create({periodInMinutes: 10 }, () =>{
     detectMainWinodows();
     checkPeriodically();
