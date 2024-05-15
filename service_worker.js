@@ -1,4 +1,4 @@
-//Think "Today" breakpoint is following
+//Set "Today" breakpoint as following like social game 
 const TODAY_BREAKPOINT_HOUR = 6;
 
 const CHECK_FREQUENCY_MINUTES = 10;
@@ -45,7 +45,8 @@ const checkPeriodically = () => {
         const now = new Date();
         const now_seconds = now.getTime();
         const last_check_time = result.last_check_time;
-        const is_today_breakpoint = now.getHours()==TODAY_BREAKPOINT_HOUR && now.getMinutes()<CHECK_FREQUENCY_MINUTES;
+        const is_today_breakpoint = now.getHours()==TODAY_BREAKPOINT_HOUR &&
+         now.getMinutes() < CHECK_FREQUENCY_MINUTES * 1.5;//inclease to allow time error
 
         let browsing_list = [];
         for(const [url, detail] of Object.entries(result.pages)){
@@ -53,7 +54,7 @@ const checkPeriodically = () => {
             const elapsed_time = now_seconds - detail.last_shown_time;
             if (elapsed_time > detail.interval * ONE_DAY_SECONDS){
                 browse = true;
-            }else if((now_seconds-last_check_time)>2*CHECK_FREQUENCY_MINUTES*60*1000 ||//もし、10分ごとにチェックしてるはずなのに前回のチェック時間が20分以上前なら（Chrome の終了や休止状態が途中であったなら）、起動直後と判断
+            }else if((now_seconds-last_check_time)>2*CHECK_FREQUENCY_MINUTES*60*1000 || //If last_check_time is more than CHECK_FREQUENCY_MINUTES * 2 ago, determine now is shortly after booting time.
                     is_today_breakpoint){
                 let today_start_time = now_seconds-((now.getHours()-TODAY_BREAKPOINT_HOUR)*3600+now.getMinutes()*60+now.getSeconds())*1000;
                 if (today_start_time > now_seconds) today_start_time -= ONE_DAY_SECONDS//modify when now is between AM 0:00-5:00
