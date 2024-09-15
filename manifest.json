@@ -10,8 +10,13 @@
     "alarms"
   ],
   "background": {
-    "service_worker": "service_worker.js"
+    "scripts": [
+      "service_worker.js"
+    ]
   },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "browse_periodically@lamrongol.com"
     }
   },
   "action": {
