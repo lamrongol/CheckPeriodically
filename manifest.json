@@ -12,8 +12,6 @@
   "background": {
     "service_worker": "service_worker.js"
   },
-    }
-  },
   "action": {
     "default_title": "Check Periodically",
     "default_popup": "popup.html",
