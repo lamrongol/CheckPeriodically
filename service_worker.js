@@ -114,8 +114,8 @@ chrome.tabs.onUpdated.addListener((_tabId, _changeInfo, tab) => {
 })
 
 // service_worker(including alarms) sleeps when browser is not active for a while 
-chrome.alarms.create("periodic", { periodInMinutes: 10 });
-chrome.alarms.onAlarm.addListener(function (_alarm) {
+browser.alarms.create("periodic", { periodInMinutes: 10 });
+browser.alarms.onAlarm.addListener(function (_alarm) {
     detectMainWinodows();
     checkPeriodically();
 });
