@@ -32,8 +32,10 @@ chrome.runtime.onInstalled.addListener((details) => {
 });
 
 chrome.runtime.onStartup.addListener(() => {
-    detectMainWinodows();
-    checkPeriodically();
+    setTimeout(() => {
+        detectMainWindows();
+        checkPeriodically();
+    }, 10 * 1000);
 }
 );
 chrome.windows.onCreated.addListener(detectMainWindows);
