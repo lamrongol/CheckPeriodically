@@ -7,7 +7,7 @@ const ONE_DAY_SECONDS = 86400 * 1000;
 
 let mainId = null;
 
-const detectMainWindows = () => {
+const detect_main_window = () => {
     chrome.windows.getAll({ populate: true, windowTypes: ['normal'] }, (windows) => {
         if (windows.length == 1) {
             mainId = null;
@@ -27,19 +27,19 @@ chrome.runtime.onInstalled.addListener((details) => {
         chrome.storage.local.set({ "last_check_time": new Date().getTime() });
         chrome.storage.local.set({ "menu": [1, 3, 7, 14, 30, 90, 180, 365, 1000] });
 
-        detectMainWindows();
+        detect_main_window();
     }
 });
 
 chrome.runtime.onStartup.addListener(() => {
     setTimeout(() => {
-        detectMainWindows();
+        detect_main_window();
         checkPeriodically();
     }, 10 * 1000);
 }
 );
-chrome.windows.onCreated.addListener(detectMainWindows);
-chrome.windows.onRemoved.addListener(detectMainWindows);
+chrome.windows.onCreated.addListener(detect_main_window);
+chrome.windows.onRemoved.addListener(detect_main_window);
 
 
 const checkPeriodically = () => {
@@ -118,6 +118,6 @@ chrome.tabs.onUpdated.addListener((_tabId, _changeInfo, tab) => {
 // service_worker(including alarms) sleeps when browser is not active for a while 
 chrome.alarms.create("periodic", { periodInMinutes: 10 });
 chrome.alarms.onAlarm.addListener(function (_alarm) {
-    detectMainWindows();
+    detect_main_window();
     checkPeriodically();
 });
