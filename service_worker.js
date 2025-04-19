@@ -1,5 +1,5 @@
 //Set "Today" breakpoint as following like social game 
-const TODAY_BREAKPOINT_HOUR = 6;
+const TODAY_BREAKPOINT_HOUR = 4;
 
 const CHECK_FREQUENCY_MINUTES = 10;
 
