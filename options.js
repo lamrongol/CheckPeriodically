@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () =>{  
+document.addEventListener('DOMContentLoaded', () =>{
 //Pages list
 const days_of_week = {
     0 : "Sun",
@@ -66,11 +66,11 @@ const table = new Tabulator("#grid-view", {
     if(data[0]){
       selected_row = rows[0];
       origin_url = data[0].url;
-    } 
+    }
     else{
       selected_row = null;
       origin_url = null;
-    } 
+    }
   },
   rowDblClick:function(e, row){
     //e - the click event object
@@ -106,7 +106,7 @@ const table = new Tabulator("#grid-view", {
 chrome.storage.local.get("pages", (result) => {
   for(const [url, detail] of Object.entries(result.pages)){
     const day_of_week_name = detail.interval%7==0 ? days_of_week[detail.day_of_week] : null;
-    table.addData({url:url, title:detail.title, interval: detail.interval, 
+    table.addData({url:url, title:detail.title, interval: detail.interval,
       day_of_week:day_of_week_name, last_shown_time:new Date(detail.last_shown_time)})
   }
   table.setSort("last_shown_time", "desc");
@@ -122,7 +122,7 @@ document.getElementById("delete").addEventListener("click", function(){
     chrome.storage.local.set(
         {"pages":result.pages}, () => {
           selected_row.delete();
-        }               
+        }
     )
   })
 });
@@ -144,19 +144,19 @@ chrome.storage.local.get("menu", (result) => {
     const opt = document.createElement("option");
     opt.value = interval;
     opt.innerText = interval;
-    
+
     interval_list.appendChild(opt);
   }
 });
 
 document.getElementById("delete_interval").addEventListener("click", function(){
   if(interval_list.selectedIndex==-1) return;
-  
+
   menu.splice(interval_list.selectedIndex, 1)
   chrome.storage.local.set(
       {"menu":menu}, () => {
         interval_list.remove(interval_list.selectedIndex);
-      }               
+      }
   )
 });
 
@@ -190,6 +190,20 @@ function add_interval(){
 document.getElementById("add_interval").addEventListener("click", add_interval);
 document.getElementById("interval_input").addEventListener("keydown", (e)=>{
   if(e.code == 'Enter') add_interval();
+});
+
+const breakpoint_hour_input = document.getElementById("breakpoint_hour_input");
+chrome.storage.local.get("breakpoint_hour", (result) => {
+  const breakpoint_hour = result.breakpoint_hour;
+  breakpoint_hour_input.value = breakpoint_hour;
+});
+document.getElementById("breakpoint_hour_input").addEventListener("input", (_e)=>{
+  const breakpoint_hour = parseInt(breakpoint_hour_input.value);
+  if(!Number.isInteger(breakpoint_hour) || breakpoint_hour<0){
+    return;
+  }
+
+  chrome.storage.local.set({"breakpoint_hour":breakpoint_hour})
 });
 
 return true;

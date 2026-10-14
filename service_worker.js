@@ -1,6 +1,4 @@
-//Set "Today" breakpoint as following like social game 
-const TODAY_BREAKPOINT_HOUR = 4;
-
+//Set "Today" breakpoint as following like social game
 const CHECK_FREQUENCY_MINUTES = 10;
 
 const ONE_DAY_SECONDS = 86400 * 1000;
@@ -22,12 +20,18 @@ const detect_main_window = () => {
 
 chrome.runtime.onInstalled.addListener((details) => {
     if (details.reason == "install") {
-        //Init data
-        chrome.storage.local.set({ 'pages': {} });
-        chrome.storage.local.set({ "last_check_time": new Date().getTime() });
-        chrome.storage.local.set({ "menu": [1, 3, 7, 14, 30, 90, 180, 365, 1000] });
+      //Init data
+      chrome.storage.local.set({ 'pages': {} });
+      chrome.storage.local.set({ "last_check_time": new Date().getTime() });
+      chrome.storage.local.set({ "menu": [1, 3, 7, 14, 30, 90, 180, 365, 1000] });
+  }
+
+  chrome.storage.local.get(["breakpoint_hour"], (result) => {
+    if (result.breakpoint_hour == undefined){
+      chrome.storage.local.set({ "breakpoint_hour": 4 })
     }
-    detect_main_window();
+  });
+  detect_main_window();
 });
 
 chrome.runtime.onStartup.addListener(() => {
@@ -42,13 +46,14 @@ chrome.windows.onRemoved.addListener(detect_main_window);
 
 
 const checkPeriodically = () => {
-    chrome.storage.local.get(['pages', "last_check_time"], (result) => {
+    chrome.storage.local.get(['pages', "last_check_time", "breakpoint_hour"], (result) => {
         if (!result.pages) return;
 
         const now = new Date();
         const now_seconds = now.getTime();
-        const last_check_time = result.last_check_time;
-        const is_today_breakpoint = now.getHours() == TODAY_BREAKPOINT_HOUR &&
+      const last_check_time = result.last_check_time;
+      const breakpoint_hour = result.breakpoint_hour;
+        const is_today_breakpoint = now.getHours() == breakpoint_hour &&
             now.getMinutes() < CHECK_FREQUENCY_MINUTES * 1.5;//inclease to allow time error
 
         let browsing_list = [];
@@ -59,7 +64,7 @@ const checkPeriodically = () => {
                 browse = true;
             } else if ((now_seconds - last_check_time) > 2 * CHECK_FREQUENCY_MINUTES * 60 * 1000 || //If last_check_time is more than CHECK_FREQUENCY_MINUTES * 2 ago, determine now is shortly after booting time.
                 is_today_breakpoint) {
-                let today_start_time = now_seconds - ((now.getHours() - TODAY_BREAKPOINT_HOUR) * 3600 + now.getMinutes() * 60 + now.getSeconds()) * 1000;
+                let today_start_time = now_seconds - ((now.getHours() - breakpoint_hour) * 3600 + now.getMinutes() * 60 + now.getSeconds()) * 1000;
                 if (today_start_time > now_seconds) today_start_time -= ONE_DAY_SECONDS//modify when now is between AM 0:00-5:00
 
                 const elapsed_days = Math.ceil((today_start_time - detail.last_shown_time) / ONE_DAY_SECONDS);
@@ -114,7 +119,7 @@ chrome.tabs.onUpdated.addListener((_tabId, _changeInfo, tab) => {
     reloadBadge(tab)
 })
 
-// service_worker(including alarms) sleeps when browser is not active for a while 
+// service_worker(including alarms) sleeps when browser is not active for a while
 browser.alarms.create("periodic", { periodInMinutes: 10 });
 browser.alarms.onAlarm.addListener(function (_alarm) {
     detect_main_window();
