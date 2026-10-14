@@ -7,8 +7,7 @@
     "unlimitedStorage",
     "tabs",
     "activeTab",
-    "alarms",
-    "data_collection_permissions"
+    "alarms"
   ],
   "background": {
     "scripts": [
@@ -17,7 +16,11 @@
   },
   "browser_specific_settings": {
     "gecko": {
-      "id": "browse-periodically@lamrongol.com"
+      "id": "browse-periodically@lamrongol.com",
+      "data_collection_permissions": {
+        "required": [],
+        "optional": []
+      }
     }
   },
   "action": {
